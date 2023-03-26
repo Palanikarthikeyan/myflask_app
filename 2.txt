@@ -1,0 +1,686 @@
+ {{ variable }}
+
+ {{ expression }}
+
+ {% if condition %}
+
+  ....
+
+ { % endif %}
+
+
+ {% for variable in collection %}
+	...
+
+ {% endfor %}
+   
+-------------------------------------
+
+python
+-------
+ - int,float,str,bool,list,tuple,dict,set,generator etc.,
+ - functions,class,object..
+ ----------------------------------
+
+
+ 'select *from table'		--->		DB: select *from table
+ |------------------|				    ...................
+    |->str		 				Table(Row X columns)
+							|
+							|
+							|
+		----------------------<-----------------
+			str,list,tuple etc.,
+
+Application ----//--->DBI(Module)--------->DBD--------->DBEngine(SQL)
+		    	         |----------------------------------|
+ 	 functionCall()
+
+
+def connect(args):
+	class Connection:
+		def __init__(self,*args):
+			....
+		def method1(self):
+			....//query
+	obj=Connection(.....)
+	return obj
+
+import dbModule
+
+dbModule.connect(......)
+	 -----------------//functionCall
+
+
+
+python <------------> DB	
+//view		     //Model
+
+	html
+	//Template
+
+-------------------------------------------------------------------------
+1. Create a connection to DB => sqlite3.connect("test.db")
+
+
+1st - create DB
+2nd - create table
+|
+3rd - Query
+|
+finally - close a connection
+
+	| eid | ename | edept |
+	|-----|-------|-------|
+	|_____|_______|_______|
+	|_____|_______|_______|
+
+		    |-->json/web - api ....//
+		    |
+Keyboard ----------python<-------->DB
+		   |	|
+		   |	|___ display to monitor
+		   |
+		 fileHandling(storage)
+
+--------------------------------------------------------------------------------
+
+>>> import sqlite3
+>>>
+>>> import sqlite3 as mydb
+>>>
+>>> mydb.connect
+<built-in function connect>
+>>>
+>>>
+>>> import sqlite3
+>>> sqlite3.connect("students.db")
+<sqlite3.Connection object at 0x0000000002A2F810>
+>>>
+>>> conn=sqlite3.connect("students.db")
+>>> conn.cursor()
+<sqlite3.Cursor object at 0x00000000027A5A40>
+>>>
+>>> sth=conn.cursor()
+>>>
+>>> sth.execute("create table mystudent(regNo INT,sname TEXT,sdept TEXT)")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.execute("insert into mystudent values('505','arun','physics')")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.execute("insert into mystudent values('506','raj','computerscience')"
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.execute("insert into mystudent values(507,'vijay','computerscience')"
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> va=567
+>>> vb='paul'
+>>> vc='civil'
+>>>
+>>> sth.execute("insert into mystudent values(va,vb,vc)")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+sqlite3.OperationalError: no such column: va
+>>> sth.execute("insert into mystudent values(?,?,?)",(va,vb,vc))
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> S=(('523','Abi','Maths'),('562','bibu','Physics'),('590','Paul','Physics'
+>>>
+>>> sth.execute("insert into mystudent values(?,?,?)",S)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+sqlite3.InterfaceError: Error binding parameter 0 - probably unsupported type
+>>>
+>>> sth.executemany("insert into mystudent values(?,?,?)",S)
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>>
+>>> sth.execute("select *from mystudent")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.fetchone()
+(505, 'arun', 'physics')
+>>> sth.fetchone()
+(506, 'raj', 'computerscience')
+>>> sth.fetchone()
+(507, 'vijay', 'computerscience')
+>>> sth.fetchone()
+(567, 'paul', 'civil')
+>>> sth.fetchone()
+(523, 'Abi', 'Maths')
+>>> sth.fetchone()
+(562, 'bibu', 'Physics')
+>>> sth.fetchone()
+(590, 'Paul', 'Physics')
+>>> sth.fetchone()
+>>> sth.fetchone()
+>>>
+>>> sth.execute("select *from mystudent")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>> sth.fetchall()
+[(505, 'arun', 'physics'), (506, 'raj', 'computerscience'), (507, 'vijay', 'c
+uterscience'), (567, 'paul', 'civil'), (523, 'Abi', 'Maths'), (562, 'bibu', '
+sics'), (590, 'Paul', 'Physics')]
+>>>
+>>> sth.execute("select *from mystudent where dept='physics'")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+sqlite3.OperationalError: no such column: dept
+>>>
+>>> sth.execute("select *from mystudent where sdept='physics'")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.fetchall()
+[(505, 'arun', 'physics')]
+>>> sth.execute("select *from mystudent where sdept='Physics'")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>> sth.fetchall()
+[(562, 'bibu', 'Physics'), (590, 'Paul', 'Physics')]
+>>>
+------------------------------------------------------------------------------
+
+Client
+ ----------->Request --------->Web_Server --->serverCode //execute
+						|
+						|
+	-----------------------<-----------------
+		Response 
+		Content-Type:text/html
+
+ Enquiry	
+ --------     __________
+ Enter Emp id:|	        |
+	      |_________|
+
+	(Search)------------------->...
+	 ^^^^^^ 
+	
+ Emp name: XYZ
+ Emp Age : N	
+ Emp working Dept: ABCD
+ -------------------------//
+			
+		<h1>Emp name is:{{ename}}</h1>
+		<h1>Emp Age is:{{eage}}</h1>
+		<h1>Emp Working dept:{{edept}}</h1>
+		-------------------------------------
+		 <html>+data //web page response - <text/html> 
+
+			Vs
+		  data only //json - application/json
+
+
+-----    Client
+	<person>[Table1]
+      	    |
+	    |<---->Supplier(food server)		----- [ Kitchen ]:cooker
+								//server
+		 1.order some food (ex: food1 food2)
+		   ----------------//post .......................//
+
+	[Table2] 
+	..     ---------------------//get ------------------------//
+	[TableN]
+
+
+
+-----    Client
+	<person>[Table1]
+      	    |
+	    |<---->Supplier(food server)		----- [ Kitchen ]:cooker
+								//server
+		 1.order some food (ex: foodX)
+		   ----------------//post ............
+				     |
+		   modify - foodY  ---//supplier  ----------------//foodY
+			    ------//put (REST)
+
+
+
+-----    Client
+	<person>[Table1]
+      	    |
+	    |<---->Supplier(food server)		----- [ Kitchen ]:cooker
+								//server
+		 1.order some food (ex: foodX)
+		   ----------------//post ............
+				     |
+		  Cancel the food(foodX) //delete (REST)
+
+get/post/put/delete
+----------------------------------------------------------------------------
+import requests
+
+r=requests.get('https://jsonplaceholder.typicode.com/todos/1')
+r.json()
+  
+----------------
+d={'userID':1,'title':'test-1','completed':True}
+
+url='https://jsonplaceholder.typicode.com/todos'
+
+r=requests.post(url,json=d)
+r.json()
+--------------------------
+url='https://jsonplaceholder.typicode.com/todos/2'
+r=requests.get(url)
+r.json()
+
+t={'userId':1,'title':'sample','completed':True}
+r=requests.put(url,json=t)
+r.json()
+------------------------------------
+r=requests.delete(url)
+r.json()
+--------------------------------------
+
+
+from flask import *
+import json <===
+app=Flask(__name__)
+
+d={'env':'env details','os':['winx','Linux']} <==
+jd=json.dumps(d) <==
+
+@app.route("/")
+def f1():
+	return "<h1> about this web app </h1>"
+
+
+@app.route("/api/v1/resource")
+def f2():
+	return jd
+	       -----//this is not html (webpage)
+if __name__ == '__main__':
+	app.run(debug=True)
+-------------------------------------------------
+from flask import *
+
+app = Flask(__name__)
+
+students=[
+{'regno':101,'name':'Arun','dept':'physics'},
+{'regno':102,'name':'leo','dept':'Maths'},
+{'regno':103,'name':'anu','dept':'CS'},
+{'regno':104,'name':'bibu','dept':'Civil'},]
+
+
+@app.route("/")
+def index():
+	return '<h1>About student details</h1>'
+
+@app.route('/api/v1/resource/students/all')
+def api_call():
+	return jsonify(students)
+
+if __name__ == '__main__':
+	app.run(debug=True)
+
+http://127.0.0.1:5000/api/v1/resource/students/all
+
+[
+  {
+    "dept": "physics", 
+    "name": "Arun", 
+    "regno": 101
+  }, 
+  {
+    "dept": "Maths", 
+    "name": "leo", 
+    "regno": 102
+  }, 
+  {
+    "dept": "CS", 
+    "name": "anu", 
+    "regno": 103
+  }, 
+  {
+    "dept": "Civil", 
+    "name": "bibu", 
+    "regno": 104
+  }
+]
+---------------------------------
+http://127.0.0.1:5000/api/v1/resource/students?regno=103
+					      ^^^^^^^^^^^
+					       request.args //dict
+					       request.args['regno']
+					          
+ request.form['n1'] <== Login:<input type='text' name='n1'>
+		|_______________________________________|
+ 
+ 
+//in python dict style
+//regno is a key - key is existing or not
+
+//if 'regno' in dict (request.args)
+	..
+for v in students:
+	if v['regno'] == ...:
+		result - append to list -- return to jsonify
+
+
+------------------------------------------------------------------------
+@app.route("/enrollment")
+def f1():
+	if request.method == 'POST':
+		return reder_template('success.html')
+	else:
+		abort(401) 
+
+ 200 - OK
+ 400 - Bad Request. The server cannot process the request
+
+ 404 - Not Found
+ 
+ 403 - Forbidden
+
+ 401 - Unauthorized 
+ 
+ 500 - Internal server error 
+
+-----------------------------------------------------------------------
+
+C:\Users\Karthikeyan\myapp1>python
+Python 3.7.5 (tags/v3.7.5:5c02a39a0b, Oct 15 2019, 00:11:34) [MSC v.1916 64 bit
+(AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sqlite3
+>>>
+>>> import sqlite3 as mydb
+>>>
+>>> mydb.connect
+<built-in function connect>
+>>>
+>>>
+>>> import sqlite3
+>>> sqlite3.connect("students.db")
+<sqlite3.Connection object at 0x0000000002A2F810>
+>>>
+>>> conn=sqlite3.connect("students.db")
+>>> conn.cursor()
+<sqlite3.Cursor object at 0x00000000027A5A40>
+>>>
+>>> sth=conn.cursor()
+>>>
+>>> sth.execute("create table mystudent(regNo INT,sname TEXT,sdept TEXT)")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.execute("insert into mystudent values('505','arun','physics')")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.execute("insert into mystudent values('506','raj','computerscience')")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.execute("insert into mystudent values(507,'vijay','computerscience')")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> va=567
+>>> vb='paul'
+>>> vc='civil'
+>>>
+>>> sth.execute("insert into mystudent values(va,vb,vc)")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+sqlite3.OperationalError: no such column: va
+>>> sth.execute("insert into mystudent values(?,?,?)",(va,vb,vc))
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> S=(('523','Abi','Maths'),('562','bibu','Physics'),('590','Paul','Physics'))
+>>>
+>>> sth.execute("insert into mystudent values(?,?,?)",S)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+sqlite3.InterfaceError: Error binding parameter 0 - probably unsupported type.
+>>>
+>>> sth.executemany("insert into mystudent values(?,?,?)",S)
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>>
+>>> sth.execute("select *from mystudent")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.fetchone()
+(505, 'arun', 'physics')
+>>> sth.fetchone()
+(506, 'raj', 'computerscience')
+>>> sth.fetchone()
+(507, 'vijay', 'computerscience')
+>>> sth.fetchone()
+(567, 'paul', 'civil')
+>>> sth.fetchone()
+(523, 'Abi', 'Maths')
+>>> sth.fetchone()
+(562, 'bibu', 'Physics')
+>>> sth.fetchone()
+(590, 'Paul', 'Physics')
+>>> sth.fetchone()
+>>> sth.fetchone()
+>>>
+>>> sth.execute("select *from mystudent")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>> sth.fetchall()
+[(505, 'arun', 'physics'), (506, 'raj', 'computerscience'), (507, 'vijay', 'comp
+uterscience'), (567, 'paul', 'civil'), (523, 'Abi', 'Maths'), (562, 'bibu', 'Phy
+sics'), (590, 'Paul', 'Physics')]
+>>>
+>>> sth.execute("select *from mystudent where dept='physics'")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+sqlite3.OperationalError: no such column: dept
+>>>
+>>> sth.execute("select *from mystudent where sdept='physics'")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> sth.fetchall()
+[(505, 'arun', 'physics')]
+>>> sth.execute("select *from mystudent where sdept='Physics'")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>> sth.fetchall()
+[(562, 'bibu', 'Physics'), (590, 'Paul', 'Physics')]
+>>>
+>>>
+>>> import json
+>>>
+>>> sth.execute("select *from mystudent where sdept='Physics'")
+<sqlite3.Cursor object at 0x00000000028AB7A0>
+>>>
+>>> records=sth.fetchall()
+>>>
+>>> type(records)
+<class 'list'>
+>>>
+>>> jd=json.dumps(records)
+>>>
+>>> jd
+'[[562, "bibu", "Physics"], [590, "Paul", "Physics"]]'
+>>>
+>>> d={"K1":"V1","K2":["V1","V2","V3"],"K3":"V4"}
+>>>
+>>> jd=json.dumps(d)
+>>>
+>>> jd
+'{"K1": "V1", "K2": ["V1", "V2", "V3"], "K3": "V4"}'
+>>>
+>>> jd=json.dumps(d,indent=2)
+>>> js
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'js' is not defined
+>>>
+>>> jd
+'{\n  "K1": "V1",\n  "K2": [\n    "V1",\n    "V2",\n    "V3"\n  ],\n  "K3": "V4"
+\n}'
+>>> print(jd)
+{
+  "K1": "V1",
+  "K2": [
+    "V1",
+    "V2",
+    "V3"
+  ],
+  "K3": "V4"
+}
+>>> jd=json.dumps(d,indent=5)
+>>> print(jd)
+{
+     "K1": "V1",
+     "K2": [
+          "V1",
+          "V2",
+          "V3"
+     ],
+     "K3": "V4"
+}
+>>>
+------------------------------------------------------------------------------
+ 			
+<h1 style="color:green;">text</h1>
+
+<style>
+body {background-color: ;}
+h1 {color:blue;}
+p {color:green;}
+</style>
+
+file: p1.css
+-------------
+
+body {background-color: ;}
+h1 {color:blue;}
+p {color:green;}
+------------------------//static / folder 
+
+<link href="p1.css"> //templates
+
+------------------------------------------------------------------------------------
+Create a project directory 
+
+ mkdir emp_enroll 
+
+ cd emp_enroll
+
+ emp_enroll/
+	    mkdir Templates
+	    cd Templates 
+		  - index.html
+		  |   / URL
+		  - 
+		  - register.html
+		    Emp name
+		    Emp dept
+		    Emp place
+		    ----------//submit data to DB
+
+		  - display.html
+			- display registered emp details
+				  --------------------
+				   -fetch data from DB 
+		  		   		
+
+
+	   - /data
+		- get json format of registered emp details
+		 
+  127.0.0.1:5000	  - html(webpage)
+  127.0.0.1:5000/register - html(webpage)
+  127.0.0.1:5000/display  - html(webpage)
+  127.0.0.1:5000/data - json response 
+-------------------------------------------------------------------------
+	
+ mkdir emp_enroll 
+
+ cd emp_enroll
+
+ emp_enroll/
+	    mkdir Templates
+	    notepad db_connection.py
+	    import sqlite3
+
+	    con = sqlite3.connect("Emp_enroll.db")
+	    if(con): 
+	    	print("database opened successfully")
+	    else:
+		print("database creation is failed")
+		exit()
+
+	    con.execute("create table ens (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,dept TEXT NOT NULL,place TEXT NOT NULL")
+
+	    print("table created successsfully")
+
+	    con.close()
+	    --------------------------------------------//
+
+
+	    notepad emp_app.py
+
+	    from flask import *
+	    
+	    app=Flask(__name__)
+
+	    @app.route("/")
+	    def index():
+		return render_template('index.html')
+		
+	    @app.route("/register",methods = ["POST","GET"])
+	    def register():
+		...
+
+	    @app.route("/display")
+	    def display():
+		  ..
+
+	    @app.route("/data")
+	    def json_view():
+		.....
+		
+------------------------------------------------------------------------------
+emp_enroll/
+	   source.py
+	   ....
+^^^^^^^^^^^
+ |
+ |___ myorg.com - IPAddress / nameserver - Linux/winx/+Utilites
+					   python + flask
+		  ISP ->		   ----------------
+
+		 
+ os-network-hostsfile <== Linux M/C  /etc/hosts -> systemctl restart network
+ ----------------------
+ FQDN	  		IPAddress	 Alias
+
+ host01.myorg.com	10.20.30.40	host01 <== in os - config
+ --------------------------------------------- 
+
+ # testing purpose -> ping host01.myorg.com
+			(or)
+		      ping 10.20.30.40
+			(or)
+		      ping host01
+ 
+ scp -r ERP  host01.myorg.com:/customer/ERP
+			(or)		
+	     10.20.30.40:/customer/ERP/
+			(or)
+	     host01:/customer/ERP/	
+	 		
+
+	
+ app.run(host01.myorg.com,
+
+
+ERP/
+   |->SD/ app-1  5001	->app.run(host01.myorg.com,5001,debug=False)
+   |	
+   |->PP/ app-2  5002	->app.run(host01.myorg.com,5002,debug=False)
+
+   |->MM/ app-3  5003   ->app.run(host01.myorg.com,5003,debug=False)
+
+
+open a broswer -> host01.myorg.com:5001/ root url of SD module 
+		  host01.myorg.com:5001/enquiry/ - enquiry form about SD module
+			
+		  ...
+__________________________________________________________________________________________________________
